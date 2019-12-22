@@ -1,6 +1,9 @@
 import logging
 import os
 
+import sys
+sys.path.insert(0, "/home/koalo/pyduofern")
+
 # from homeassistant.const import 'serial_port', 'config_file', 'code'
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
@@ -11,7 +14,8 @@ from homeassistant.helpers import discovery
 # Import the device class from the component that you want to support
 
 # Home Assistant depends on 3rd party packages for API specific code.
-REQUIREMENTS = ['pyduofern==0.25.2']
+#REQUIREMENTS = ['pyduofern==0.25.2']
+REQUIREMENTS = []
 
 _LOGGER = logging.getLogger(__name__)
 
