@@ -2,6 +2,7 @@ import logging
 import os
 
 import sys
+#sys.path.insert(0, "/home/koalo/pyduofern/pyduofern")
 sys.path.insert(0, "/home/koalo/pyduofern")
 
 # from homeassistant.const import 'serial_port', 'config_file', 'code'

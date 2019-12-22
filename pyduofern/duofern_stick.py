@@ -588,6 +588,7 @@ class DuofernStickThreaded(DuofernStick, threading.Thread):
             if len(in_data) == 44:
                 if in_data != duoACK:
                     self._simple_write(duoACK)
+                logger.debug("in_data {}".format(in_data))
                 try:
                     self.process_message(in_data)
                 except Exception as exc:

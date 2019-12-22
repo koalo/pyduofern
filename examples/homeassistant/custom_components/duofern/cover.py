@@ -17,6 +17,7 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
     """Setup the Awesome Light platform."""
 
     stick = hass.data[DOMAIN]['stick']
+    print(stick.config)
 
     # Add devices
     to_add = [DuofernShutter(device['id'], device['name'], stick, hass) for device in stick.config['devices'] if

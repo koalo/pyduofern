@@ -935,9 +935,12 @@ class Duofern(object):
             buf = duoCommand
             command = None
 
+            print(code)
+            print(self.modules['by_code'][device_id])
             if 'chanNo' in self.modules['by_code'][device_id]:
                 chanNo = self.modules['by_code'][device_id]['chanNo']
             # chanNo = hash->{chanNo} if (hash->{chanNo})
+            print("HALLI HALLO "+chanNo)
 
             if 'noArg' in commands[cmd]:
                 if (arg and (arg == "timer")):
