@@ -1,6 +1,10 @@
 import logging
 import os
 
+import sys
+#sys.path.insert(0, "/home/koalo/pyduofern/pyduofern")
+sys.path.insert(0, "/home/koalo/pyduofern")
+
 # from homeassistant.const import 'serial_port', 'config_file', 'code'
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
@@ -11,7 +15,8 @@ from homeassistant.helpers import discovery
 # Import the device class from the component that you want to support
 
 # Home Assistant depends on 3rd party packages for API specific code.
-REQUIREMENTS = ['pyduofern==0.25.2']
+#REQUIREMENTS = ['pyduofern==0.25.2']
+REQUIREMENTS = []
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -40,11 +45,13 @@ def setup(hass, config):
 
     from pyduofern.duofern_stick import DuofernStickThreaded
 
-    newstyle_config = hass.config_entries.async_entries(DOMAIN)[0]
-    if newstyle_config:
-        serial_port = newstyle_config.data['serial_port']
-        code = newstyle_config.data['code']
-        configfile = newstyle_config.data['config_file']
+    newstyle_config = hass.config_entries.async_entries(DOMAIN)
+    if len(newstyle_config) > 0:
+        newstyle_config = newstyle_config[0]
+        if newstyle_config:
+            serial_port = newstyle_config.data['serial_port']
+            code = newstyle_config.data['code']
+            configfile = newstyle_config.data['config_file']
 
     elif config.get(DOMAIN) is not None:
         serial_port = config[DOMAIN].get(CONF_SERIAL_PORT)
