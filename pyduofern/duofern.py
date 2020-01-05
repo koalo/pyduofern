@@ -151,6 +151,8 @@ class Duofern(object):
 
         if code.lower() == 'ffffff':
             return
+
+        print("msg ", msg, " code ", code)
         # return hash->{NAME} if (code == "FFFFFF")
 
         try:
@@ -199,6 +201,7 @@ class Duofern(object):
         elif msg[0:6] == "0fff0f":
             format = msg[6:6 + 2]
             ver = msg[24:24 + 1] + msg[25:25 + 1]
+            print("format ", format)
 
             self.update_state(code, "version", ver, "0", channel=channel)
 
