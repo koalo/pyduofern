@@ -532,7 +532,7 @@ class Duofern(object):
                 timerAuto = "on" if int(msg[12:12 + 2], 16) & 0x08 else "off"
                 manualMode = "on" if int(msg[12:12 + 2], 16) & 0x10 else "off"
 
-                state = "T: temperature1 desired: desiredTemp"
+                state = "T: {} desired: {}".format(temperature1,desiredTemp)
 
                 # readingsBeginUpdate(hash)
                 self.update_state(code, "measured-temp", temperature1, "1", channel=channel)
@@ -550,6 +550,35 @@ class Duofern(object):
 
                 self.update_state(code, "state", state, "1", channel=channel)
                 # readingsEndUpdate(hash, 1)
+
+            # Heizkoerperantrieb -- not tested yet
+            elif format == "29":  # pragma: no cover
+                desiredTemp = "%0.1f" % (((int(msg[6:6 + 4], 16) & 0x3F) + 8) / 2)
+                measuredTemp = "%0.1f" % (((int(msg[10:10 + 4], 16) & 0xFFFF) - 0) / 100)
+                manualMode = "on" if int(msg[14:14 + 4], 16) & 0x1 else "off"
+                timerAuto = "on" if int(msg[14:14 + 4], 16) & 0x2 else "off"
+                sendingInterval = (int(msg[14:14 + 4], 16) & 0xFC0) >> 6
+                batteryPercent = int(msg[20:20 + 4], 16) & 0x7F
+                valvePosition = int(msg[18:18 + 4], 16) & 0x7F
+                forceResponse = (int(msg[22:22 + 4], 16) & 0x80) >> 7
+                version = hex(int(msg[24:24 + 4], 16) & 0x7F)
+
+                state = "T: {} desired: {}".format(measuredTemp,desiredTemp)
+
+                # readingsBeginUpdate(hash)
+                self.update_state(code, "desired-temp", desiredTemp, "1", channel=channel)
+                self.update_state(code, "measured-temp", measuredTemp, "1", channel=channel)
+                self.update_state(code, "manualMode", manualMode, "1", channel=channel)
+                self.update_state(code, "timeAutomatic", timerAuto, "1", channel=channel)
+                self.update_state(code, "sendingInterval", sendingInterval, "1", channel=channel)
+                self.update_state(code, "batteryPercent", batteryPercent, "1", channel=channel)
+                self.update_state(code, "valvePosition", valvePosition, "1", channel=channel)
+                self.update_state(code, "forceResponse", forceResponse, "1", channel=channel)
+                self.update_state(code, "version", version, "1", channel=channel)
+
+                self.update_state(code, "state", state, "1", channel=channel)
+                # readingsEndUpdate(hash, 1)
+
 
             else:
                 logger.warning("DUOFERN unknown msg: {}".format(msg))
@@ -716,6 +745,8 @@ class Duofern(object):
 #            DoTrigger(module_definition01['name'], None)
 #        if module_definition02:
 #            DoTrigger(module_definition02['name'], None)
+
+        print(self.modules['by_code'][code])
 
         return name
 
