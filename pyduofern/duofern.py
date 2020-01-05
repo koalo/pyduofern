@@ -43,6 +43,8 @@ duoCommand = "0Dkknnnnnnnnnnnnnnnnnnnn000000zzzzzzyyyyyy00"
 duoWeatherConfig = "0D001B400000000000000000000000000000yyyyyy00"
 duoWeatherWriteConfig = "0DFF1Brrnnnnnnnnnnnnnnnnnnnn00000000yyyyyy00"
 duoSetTime = "0D0110800001mmmmmmmmnnnnnn0000000000yyyyyy00"
+duoSetHSA = "0D011D80nnnnnn0000000000000000000000yyyyyy00"
+
 
 
 def merge_dicts(*dict_args):
@@ -579,7 +581,15 @@ class Duofern(object):
                 self.update_state(code, "state", state, "1", channel=channel)
                 # readingsEndUpdate(hash, 1)
 
-
+                # Set commands can only delivered directly after
+                # a status message. Also a message has to be sent
+                # if forceResponse is set.
+                setValue = 0 # TODO fill with current set values
+                if setValue != 0 or forceResponse:
+                    buf = duoSetHSA
+                    buf = buf.replace("nnnnnn", setValue)
+                    buf = buf.replace("yyyyyy", code)
+                    yield from self.send(buf)
             else:
                 logger.warning("DUOFERN unknown msg: {}".format(msg))
 
