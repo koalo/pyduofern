@@ -586,6 +586,28 @@ class Duofern(object):
                 # if forceResponse is set.
                 # TODO fill with current set values
                 setValue = 0
+                if 'pendingCmds' in self.modules['by_code'][code]:
+                    for k,v in self.modules['by_code'][code]['pendingCmds'].items():
+                        if v == None:
+                            continue
+
+                        v = v[0] # take only the first argument
+
+                        if k == 'manualMode':
+                            v = 1 if v else 0
+                            setValue |= (v << 8) | (1 << 10)
+                        elif k == 'timeAutomatic':
+                            v = 1 if v else 0
+                            setValue |= (v << 9) | (1 << 11)
+                        elif k == 'sendingInterval':
+                            setValue |= (v << 0) | (1 << 7)
+                        elif k == 'desired-temp':
+                            v = int((v - 4) / 0.5)
+                            setValue |= (v << 17) | (1 << 23)
+
+                        # mark as processed
+                        self.modules['by_code'][code]['pendingCmds'][k] = None
+
                 if setValue != 0 or forceResponse:
                     buf = duoSetHSA
                     buf = buf.replace("nnnnnn", "{:06x}".format(setValue))
@@ -817,7 +839,6 @@ class Duofern(object):
             if not 'pendingCmds' in self.modules['by_code'][code]:
                 self.modules['by_code'][code]['pendingCmds'] = {}
             self.modules['by_code'][code]['pendingCmds'][cmd] = args
-            print(self.modules['by_code'][code])
             return None
 
         blindsMode = "off" if not "blindsMode" in self.modules['by_code'][code] else self.modules['by_code'][code]
