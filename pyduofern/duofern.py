@@ -812,6 +812,14 @@ class Duofern(object):
         if code[0:2] in ("65", "74") and len(code) >= 8 and code[6:8] == "01":
             sets = merge_dicts(setsSwitchActor)  # if (code =~ /^(65|74)....01/)
 
+        # Heizkoerperantrieb -- not tested yet
+        if code[0:2] == "e1":
+            if not 'pendingCmds' in self.modules['by_code'][code]:
+                self.modules['by_code'][code]['pendingCmds'] = {}
+            self.modules['by_code'][code]['pendingCmds'][cmd] = args
+            print(self.modules['by_code'][code])
+            return None
+
         blindsMode = "off" if not "blindsMode" in self.modules['by_code'][code] else self.modules['by_code'][code]
         if (blindsMode == "on"):
             sets = merge_dicts(sets, setsBlinds)
