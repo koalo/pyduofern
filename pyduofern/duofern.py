@@ -147,6 +147,7 @@ class Duofern(object):
         return self.modules['by_code'][code][key]
 
     def parse(self, msg):
+        print("fii ", msg)
         code = msg[30:36]
         if msg[0:2] == '81':
             code = msg[36:42]

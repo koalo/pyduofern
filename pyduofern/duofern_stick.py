@@ -174,6 +174,7 @@ class DuofernStick(object):
             json.dump(self.config, config_fh, indent=4)
 
     def process_message(self, message):
+        print("foo ", message)
         if self.recording:
             self.recorder.write("received {}\n".format(message))
             self.recorder.flush()
@@ -224,6 +225,7 @@ class DuofernStick(object):
             #  my %addvals = (RAWMSG => $rmsg);
             #  Dispatch($hash, $rmsg, \%addvals);
         #        logger.info("got {}".format(message))
+        print("faa ", message)
         self.duofern_parser.parse(message)
 
     def clean_config(self):
