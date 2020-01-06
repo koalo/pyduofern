@@ -567,20 +567,6 @@ class Duofern(object):
 
                 state = "T: {} desired: {}".format(measuredTemp,desiredTemp)
 
-                # readingsBeginUpdate(hash)
-                self.update_state(code, "desired-temp", desiredTemp, "1", channel=channel)
-                self.update_state(code, "measured-temp", measuredTemp, "1", channel=channel)
-                self.update_state(code, "manualMode", manualMode, "1", channel=channel)
-                self.update_state(code, "timeAutomatic", timerAuto, "1", channel=channel)
-                self.update_state(code, "sendingInterval", sendingInterval, "1", channel=channel)
-                self.update_state(code, "batteryPercent", batteryPercent, "1", channel=channel)
-                self.update_state(code, "valvePosition", valvePosition, "1", channel=channel)
-                self.update_state(code, "forceResponse", forceResponse, "1", channel=channel)
-                self.update_state(code, "version", version, "1", channel=channel)
-
-                self.update_state(code, "state", state, "1", channel=channel)
-                # readingsEndUpdate(hash, 1)
-
                 # Set commands can only delivered directly after
                 # a status message. Also a message has to be sent
                 # if forceResponse is set.
@@ -593,6 +579,28 @@ class Duofern(object):
 
                         v = v[0] # take only the first argument
 
+                        # mark as processed
+                        self.modules['by_code'][code]['pendingCmds'][k] = None
+
+                        # get current value
+                        if k == 'manualMode':
+                            vcurrent = manualMode
+                        elif k == 'timeAutomatic':
+                            vcurrent = timerAuto
+                        elif k == 'sendingInterval':
+                            vcurrent = sendingInterval
+                        elif k == 'desired-temp':
+                            vcurrent = desiredTemp
+
+                        # get previous value
+                        vprevious = self.get_state(code, k)
+
+                        # check if value has changed since previous update
+                        # if yes, we will ignore this command since the change at the device should have precedence
+                        if vprevious != vcurrent:
+                            continue
+
+                        # convert and set new value
                         if k == 'manualMode':
                             v = 1 if v else 0
                             setValue |= (v << 8) | (1 << 10)
@@ -605,9 +613,20 @@ class Duofern(object):
                             v = int((v - 4) / 0.5)
                             setValue |= (v << 17) | (1 << 23)
 
-                        # mark as processed
-                        self.modules['by_code'][code]['pendingCmds'][k] = None
+                # readingsBeginUpdate(hash)
+                self.update_state(code, "desired-temp", desiredTemp, "1", channel=channel)
+                self.update_state(code, "measured-temp", measuredTemp, "1", channel=channel)
+                self.update_state(code, "manualMode", manualMode, "1", channel=channel)
+                self.update_state(code, "timeAutomatic", timerAuto, "1", channel=channel)
+                self.update_state(code, "sendingInterval", sendingInterval, "1", channel=channel)
+                self.update_state(code, "batteryPercent", batteryPercent, "1", channel=channel)
+                self.update_state(code, "valvePosition", valvePosition, "1", channel=channel)
+                self.update_state(code, "forceResponse", forceResponse, "1", channel=channel)
+                self.update_state(code, "version", version, "1", channel=channel)
+                self.update_state(code, "state", state, "1", channel=channel)
+                # readingsEndUpdate(hash, 1)
 
+                # Now send the response
                 if setValue != 0 or forceResponse:
                     buf = duoSetHSA
                     buf = buf.replace("nnnnnn", "{:06x}".format(setValue))
