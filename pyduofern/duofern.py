@@ -46,7 +46,6 @@ duoSetTime = "0D0110800001mmmmmmmmnnnnnn0000000000yyyyyy00"
 duoSetHSA = "0D011D80nnnnnn0000000000000000000000yyyyyy00"
 
 
-
 def merge_dicts(*dict_args):
     """
     Given any number of dicts, shallow copy and merge into a new dict,
@@ -585,12 +584,14 @@ class Duofern(object):
                 # Set commands can only delivered directly after
                 # a status message. Also a message has to be sent
                 # if forceResponse is set.
-                setValue = 0 # TODO fill with current set values
+                # TODO fill with current set values
+                setValue = 0
                 if setValue != 0 or forceResponse:
-                    buf = duoSetHSA
-                    buf = buf.replace("nnnnnn", setValue)
-                    buf = buf.replace("yyyyyy", code)
-                    yield from self.send(buf)
+                    pass
+                    #buf = duoSetHSA
+                    #buf = buf.replace("nnnnnn", "{:06x}".format(setValue))
+                    #buf = buf.replace("yyyyyy", code)
+                    #yield from self.send(buf)
             else:
                 logger.warning("DUOFERN unknown msg: {}".format(msg))
 
