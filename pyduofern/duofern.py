@@ -602,14 +602,18 @@ class Duofern(object):
 
                         # convert and set new value
                         if k == 'manualMode':
+                            manualMode = "on" if v else "off"
                             v = 1 if v else 0
                             setValue |= (v << 8) | (1 << 10)
                         elif k == 'timeAutomatic':
+                            timerAuto = "on" if v else "off"
                             v = 1 if v else 0
                             setValue |= (v << 9) | (1 << 11)
                         elif k == 'sendingInterval':
+                            sendingInterval = v
                             setValue |= (v << 0) | (1 << 7)
                         elif k == 'desired-temp':
+                            desiredTemp = "%0.1f" % v
                             v = int((v - 4) / 0.5)
                             setValue |= (v << 17) | (1 << 23)
 
