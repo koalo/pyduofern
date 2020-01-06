@@ -590,7 +590,7 @@ class Duofern(object):
                     buf = duoSetHSA
                     buf = buf.replace("nnnnnn", "{:06x}".format(setValue))
                     buf = buf.replace("yyyyyy", code)
-                    self.send(buf)
+                    list(self.send(buf))
             else:
                 logger.warning("DUOFERN unknown msg: {}".format(msg))
 
@@ -763,6 +763,7 @@ class Duofern(object):
 
     @asyncio.coroutine
     def send(self, cmd):
+        print("sending ",cmd)
         yield from self.send_hook(cmd)
 
     @asyncio.coroutine
