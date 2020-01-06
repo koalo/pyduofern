@@ -588,9 +588,9 @@ class Duofern(object):
                 setValue = 0
                 if setValue != 0 or forceResponse:
                     buf = duoSetHSA
-                    buf = buf.replace("nnnnnn", "{:06x}".format(setValue))
-                    buf = buf.replace("yyyyyy", code)
-                    yield from self.send(buf)
+                    #buf = buf.replace("nnnnnn", "{:06x}".format(setValue))
+                    #buf = buf.replace("yyyyyy", code)
+                    #yield from self.send(buf)
             else:
                 logger.warning("DUOFERN unknown msg: {}".format(msg))
 
